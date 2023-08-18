@@ -172,6 +172,234 @@ test_loader = torch.utils.data.DataLoader(
 7. **数据增强**：数据增强是通过`albumentations`库实现的。它包括随机旋转、随机裁剪、水平翻转、随机对比度和随机亮度等操作。这些操作可以增加模型的泛化能力，提高模型对于不同数据分布的适应能力。
 
 总体而言，这段代码构建了一个用于医学图像分析的数据处理和加载框架，包括数据集类、数据加载器，以及一些数据预处理操作。
+```
+class XunFeiNet(nn.Module):
+    def __init__(self):
+        super(XunFeiNet, self).__init__()
+                
+        model = models.resnet101(True)
+        model.conv1 = torch.nn.Conv2d(50, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+        model.avgpool = nn.AdaptiveAvgPool2d(1)
+        model.fc = nn.Linear(2048, 2)
+        self.resnet = model
+        
+    def forward(self, img):        
+        out = self.resnet(img)
+        return out
+        
+model = XunFeiNet()
+model = model.to('cuda')
+criterion = nn.CrossEntropyLoss().cuda()
+optimizer = torch.optim.AdamW(model.parameters(), 0.001)
+```
+这段代码定义了一个名为 `XunFeiNet` 的神经网络模型，这个模型基于预训练的 ResNet-101 架构，并在顶部进行了微调以适应特定任务。然后，它将模型放置到 CUDA 设备上，定义了损失函数（交叉熵损失）和优化器（AdamW）。
+
+1. **定义 `XunFeiNet` 模型类**：这个类继承自 `nn.Module`，是一个自定义的神经网络模型。在构造函数 `__init__` 中，首先调用了父类的构造函数，然后执行以下步骤：
+
+    - 创建一个预训练的 ResNet-101 模型并加载预训练权重（通过 `models.resnet101(True)`）。
+    - 修改 ResNet-101 模型的第一个卷积层，将输入通道数从默认的 3 通道改为 50 通道（与你的数据通道数相对应）。
+    - 替换模型的全局平均池化层为自适应平均池化层，以适应不同尺寸的输入图像。
+    - 替换模型的全连接层（最后一层）为一个适合任务的线性层，输出维度为 2，对应于任务的类别数目。
+
+2. **`forward` 方法**：这个方法定义了数据从模型的输入到输出的流程。在这个情况下，输入是图像数据，通过 ResNet-101 的各层传递，最终得到模型的输出。
+
+3. **创建模型对象**：通过实例化 `XunFeiNet` 类，你创建了一个模型对象 `model`。
+
+4. **将模型移至 CUDA 设备**：`model.to('cuda')` 将模型移动到 CUDA 设备上，以便在 GPU 上进行计算。前提是你的计算机有可用的 CUDA 设备。
+
+5. **定义损失函数**：使用交叉熵损失作为分类任务的损失函数。交叉熵损失适用于多类别分类问题。
+
+6. **定义优化器**：使用 AdamW 优化器来优化模型的参数，学习率设置为 0.001。AdamW 是一种变种的 Adam 优化器，通常在深度学习中表现良好。
+
+这段代码的主要目的是定义模型结构、损失函数和优化器，为模型的训练做好准备。
+```
+def train(train_loader, model, criterion, optimizer):
+    model.train()
+    train_loss = 0.0
+    for i, (input, target) in enumerate(train_loader):
+        input = input.cuda(non_blocking=True)
+        target = target.cuda(non_blocking=True).long()  # Convert target to LongTensor
+
+        output = model(input)
+        loss = criterion(output, target)
+
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        if i % 20 == 0:
+            print(loss.item())
+
+        train_loss += loss.item()
+
+    return train_loss / len(train_loader)
+
+def validate(val_loader, model, criterion):
+    model.eval()
+    val_acc = 0.0
+
+    with torch.no_grad():
+        for i, (input, target) in enumerate(val_loader):
+            input = input.cuda()
+            target = target.cuda().long()  # Convert target to LongTensor
+
+            output = model(input)
+            loss = criterion(output, target)
+
+            val_acc += (output.argmax(1) == target).sum().item()
+
+    return val_acc / len(val_loader.dataset)
+```
+这段代码定义了两个函数，`train` 和 `validate`，用于训练和验证模型。
+
+1. **`train` 函数**：
+   - `train_loader`：训练数据加载器，用于提供训练数据批次。
+   - `model`：模型对象，用于训练。
+   - `criterion`：损失函数，用于计算训练损失。
+   - `optimizer`：优化器，用于更新模型的参数。
+
+   这个函数执行以下操作：
+   - 将模型设置为训练模式（`model.train()`）。
+   - 初始化训练损失为 0。
+   - 迭代训练数据批次，在每个批次中进行以下操作：
+     - 将输入数据和目标标签转移到 CUDA 设备上。
+     - 将输入数据传递给模型，得到模型输出。
+     - 计算预测结果和目标标签之间的损失。
+     - 清零优化器的梯度。
+     - 反向传播计算梯度。
+     - 使用优化器更新模型参数。
+     - 每处理 20 个批次，打印当前批次的损失。
+     - 将当前批次的损失累加到总训练损失中。
+   - 返回平均训练损失。
+
+2. **`validate` 函数**：
+   - `val_loader`：验证数据加载器，用于提供验证数据批次。
+   - `model`：模型对象，用于验证。
+   - `criterion`：损失函数，用于计算验证损失。
+
+   这个函数执行以下操作：
+   - 将模型设置为评估模式（`model.eval()`）。
+   - 初始化验证准确率为 0。
+   - 使用 `torch.no_grad()` 上下文，避免在验证过程中计算梯度。
+   - 迭代验证数据批次，在每个批次中进行以下操作：
+     - 将输入数据和目标标签转移到 CUDA 设备上。
+     - 将输入数据传递给模型，得到模型输出。
+     - 计算预测结果和目标标签之间的损失。
+     - 计算预测结果中的最大值索引，与目标标签比较以计算准确率。
+     - 将正确预测的样本数量累加到验证准确率中。
+   - 返回平均验证准确率。
+
+这两个函数分别用于训练和验证模型，分别计算训练损失和验证准确率。在训练循环中，`train` 函数通过多次迭代和参数更新来训练模型。在验证循环中，`validate` 函数评估模型在验证数据上的性能。通常，训练过程会在多个周期（epochs）中重复执行，每个周期包括训练和验证阶段。
+```
+from sklearn.model_selection import train_test_split, StratifiedKFold, KFold
+
+skf = StratifiedKFold(n_splits=10, random_state=233, shuffle=True)
+
+labels = [int('NC' in path) for path in train_path]
+
+for fold_idx, (train_idx, val_idx) in enumerate(skf.split(train_path, labels)):
+    print(f"Fold {fold_idx + 1}/{skf.get_n_splits()}")
+    
+    train_loader = torch.utils.data.DataLoader(
+        XunFeiDataset(np.array(train_path)[train_idx],  # Use np.array to index train_path
+            A.Compose([
+                A.RandomRotate90(),
+                A.RandomCrop(120, 120),
+                A.HorizontalFlip(p=0.5),
+                A.RandomContrast(p=0.5),
+                A.RandomBrightnessContrast(p=0.5),
+            ])
+        ), batch_size=2, shuffle=True, num_workers=0, pin_memory=False
+    )
+    
+    val_loader = torch.utils.data.DataLoader(
+        XunFeiDataset(np.array(train_path)[val_idx],  # Use np.array to index train_path
+            A.Compose([
+                A.RandomCrop(120, 120),
+            ])
+        ), batch_size=2, shuffle=False, num_workers=0, pin_memory=False
+    )
+    
+    for epoch in range(10):
+        print(f"Epoch [{epoch + 1}/{10}]")
+        
+        train_loss = train(train_loader, model, criterion, optimizer)
+        val_acc = validate(val_loader, model, criterion)
+        train_acc = validate(train_loader, model, criterion)
+        
+        print(f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f}, Val Acc: {val_acc:.4f}")
+
+        with torch.no_grad():
+            for i, (input, target) in enumerate(val_loader):
+                input = input.cuda()
+                target = target.cuda().long()
+
+                output = model(input)
+                predicted_probs.extend(output.cpu().numpy())
+                predicted_labels.extend(output.argmax(1).cpu().numpy())  # Using argmax to get predicted labels
+                true_labels.extend(target.cpu().numpy())
+        
+    # Save the trained model
+    model_save_path = f'./resnet101_fold{fold_idx}.pt'
+    torch.save(model.state_dict(), model_save_path)
+    print(f"Model saved at {model_save_path}")
+
+# Convert true labels and predicted probabilities to NumPy arrays
+true_labels = np.array(true_labels)
+predicted_probs = np.array(predicted_probs)
+predicted_labels = np.array(predicted_labels)
+
+# Compute ROC curve and AUC
+fpr, tpr, _ = roc_curve(true_labels, predicted_probs[:, 1])  # Assuming you have binary classification
+roc_auc = auc(fpr, tpr)
+
+# Plot ROC curve
+plt.figure()
+plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
+plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver Operating Characteristic')
+plt.legend(loc="lower right")
+plt.show()
+
+print("AUC:", roc_auc)
+
+# 计算F1分数
+f1 = f1_score(true_labels, predicted_labels)
+print("F1 Score:", f1)
+```
+这段代码展示了如何使用交叉验证（Cross-Validation）来训练、验证和评估模型，并计算模型的性能指标。下面将对每个主要部分进行解释：
+
+1. **导入库**：代码一开始导入了一些需要用到的库，包括 `train_test_split`、`StratifiedKFold`、`KFold` 用于交叉验证，以及 `roc_curve`、`auc`、`f1_score` 用于计算 ROC 曲线、AUC 和 F1 分数，还有 `plt` 用于绘制图形。
+
+2. **设置交叉验证参数**：使用 `StratifiedKFold` 创建了一个分层交叉验证对象 `skf`，将数据分成了 10 个折叠，设置了随机种子和数据洗牌（shuffle）。
+
+3. **生成标签**：根据文件路径中是否包含 `'NC'` 字符，将数据的标签生成为二进制标签（0 或 1）。
+
+4. **交叉验证循环**：使用 `enumerate` 遍历每个折叠，分别得到训练索引 `train_idx` 和验证索引 `val_idx`。
+
+   在每个折叠内，进行以下操作：
+   - 创建训练数据加载器 `train_loader` 和验证数据加载器 `val_loader`，使用当前折叠的索引来从训练数据中获取对应的数据。
+   - 针对每个折叠，进行 10 个周期的训练循环（可以根据实际情况调整），在每个周期内：
+     - 调用 `train` 函数进行训练，并记录训练损失。
+     - 调用 `validate` 函数计算验证集的准确率和训练集的准确率。
+     - 打印当前周期的训练损失、训练准确率和验证准确率。
+     - 在验证集上进行推断，获取预测的概率和标签，并将它们存储在相应的列表中。
+
+   完成 10 个周期后，保存训练好的模型，并打印保存路径。
+
+5. **计算 ROC 曲线和 AUC**：使用预测的概率和真实标签计算 ROC 曲线的假正率（FPR）和真正率（TPR），然后计算 AUC 值。
+
+6. **绘制 ROC 曲线**：绘制 ROC 曲线，展示分类器在不同阈值下的性能。
+
+7. **计算和打印 AUC**：打印计算得到的 AUC 值，用于评估模型在不同阈值下的性能。
+
+8. **计算和打印 F1 分数**：使用预测的标签和真实标签计算 F1 分数，该分数综合了精确度和召回率。
+
+总之，这段代码演示了如何使用分层交叉验证来评估模型性能，并计算 ROC 曲线、AUC 值以及 F1 分数等评价指标，以更全面地了解模型在不同数据子集上的表现。
 
 ## 杂谈
 
