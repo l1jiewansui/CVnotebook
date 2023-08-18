@@ -49,7 +49,6 @@ baseline使用的机器学习方法（基于特征提取和逻辑回归）的优
 
 9. **ConvNeXt、MNASNet、RegNet、ShuffleNet V2**：这些模型在一些特定任务和场景中表现出色，但可能较少被使用。
 
-综合考虑你的任务特点、数据集规模和计算资源，你可以选择适合的模型进行实验和训练。最好的方法是尝试不同的模型，并通过验证数据集来选择最适合的模型。
 
 ## 杂谈
 
@@ -58,3 +57,5 @@ baseline使用的机器学习方法（基于特征提取和逻辑回归）的优
 2.库内有nii转化为png的python脚本
 
 3.下载特定包换腾讯源-i http://mirrors.cloud.tencent.com/pypi/simple --trusted-host mirrors.cloud.tencent.com
+
+4.全NC的结果是0.74214，现在最佳结果为0.76712
