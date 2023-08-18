@@ -1,6 +1,8 @@
 # CVnotebook
 具体笔记详见jupyternotebook注释
 
+baseline没啥好说的。。。直接进入CNN
+
 ## Phase 1
 
 ### 1.赛题要求
