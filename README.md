@@ -444,7 +444,5 @@ print("F1 Score:", f1)
 4.全NC的结果是0.74214，现在最佳结果为0.76712
 
 5.41个NC,判断公式为 
+The formula is: $F1score=\frac{2}{\frac{59}{x}+\frac{100-x}{x}}$.
 
-$$ 
-F1score=\frac{2}{\frac{59}{x}+\frac{100-x}{x}}
-$$
