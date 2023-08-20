@@ -430,6 +430,12 @@ No CV
 <img width="386" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/9f257ceb-23de-4655-9022-feb9a6858195">
 
 No CV + BN
+
+<img width="378" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/43736ea2-efc6-4593-8932-035656f670d8">
+
+<img width="381" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/cd2bc595-cb41-4b7d-8d9b-cfe4b480eac5">
+
+
 ### 遇到的困难
 
 1.网络极度欠拟合，无论是训练集准确率还是验证集准确率都在0.5-0.6范围内。
