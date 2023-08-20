@@ -430,11 +430,14 @@ No CV
 <img width="386" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/9f257ceb-23de-4655-9022-feb9a6858195">
 
 No CV + BN
-
+CV
 <img width="378" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/43736ea2-efc6-4593-8932-035656f670d8">
 
 <img width="381" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/cd2bc595-cb41-4b7d-8d9b-cfe4b480eac5">
 
+CV + No BN epoch=100*10
+
+事实证明，100次迭代之后可能会出现过拟合，效果可能不佳。
 
 ### 遇到的困难
 
@@ -450,7 +453,7 @@ No CV + BN
 
 2.交叉检验没有达到预期的效果，收效甚微。
 
-3.事实证明，增加epoch是没有显著作用的，大约20比较好。
+3.事实证明，增加epoch可以显著降低loss，大约100比较好。
 
 ### 交叉熵损失函数
 
@@ -493,6 +496,10 @@ https://www.jianshu.com/p/45c2180cab17
 https://blog.csdn.net/weixin_40267472/article/details/82216668
 https://zhuanlan.zhihu.com/p/107687473
 
+### 1.预训练模型
+
+
+
 ## 杂谈
 
 1.为什么要用F1score,准确率+召回率，比较均衡的评价指标。
@@ -505,4 +512,7 @@ https://zhuanlan.zhihu.com/p/107687473
 
 5.41个NC,判断公式为 
 The formula is: $F1score=\frac{2}{\frac{59}{x}+\frac{100-x}{x}}$.
+
+6.数据集中存在脏数据，空白图片
+![21 nii_slice_000](https://github.com/l1jiewansui/CVnotebook/assets/134419371/ce61ddc2-f2f7-4929-9526-2df931877933)
 
