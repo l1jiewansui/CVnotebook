@@ -550,7 +550,54 @@ https://blog.csdn.net/qq_41776781/article/details/111992844
 
 <img width="475" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/a40257b1-50ef-45c1-892c-0501d494a1a8">
 
-
+```
+NIfTI Header Information:
+<class 'nibabel.nifti1.Nifti1Header'> object, endian='>'
+sizeof_hdr      : 348
+data_type       : b''
+db_name         : b'011_S_0023'
+extents         : 16384
+session_error   : 0
+regular         : b'r'
+dim_info        : 0
+dim             : [  4 128 128  63   1   0   0   0]
+intent_p1       : 0.0
+intent_p2       : 0.0
+intent_p3       : 0.0
+intent_code     : none
+datatype        : uint16
+bitpix          : 16
+slice_start     : 0
+pixdim          : [1.        2.059405  2.059405  2.4250002 0.        0.        0.
+ 0.       ]
+vox_offset      : 0.0
+scl_slope       : nan
+scl_inter       : nan
+slice_end       : 0
+slice_code      : unknown
+xyzt_units      : 2
+cal_max         : 0.0
+cal_min         : 0.0
+slice_duration  : 0.0
+toffset         : 0.0
+glmax           : 32767
+glmin           : 0
+descrip         : b''
+aux_file        : b''
+qform_code      : scanner
+sform_code      : unknown
+quatern_b       : 0.0
+quatern_c       : 0.0
+quatern_d       : 0.0
+qoffset_x       : 128.0
+qoffset_y       : 128.0
+qoffset_z       : 63.0
+srow_x          : [0. 0. 0. 0.]
+srow_y          : [0. 0. 0. 0.]
+srow_z          : [0. 0. 0. 0.]
+intent_name     : b''
+magic           : b'n+1'
+```
 
 ### 3.设置随机种子
 
