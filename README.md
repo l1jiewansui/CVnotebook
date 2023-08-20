@@ -425,6 +425,11 @@ print("F1 Score:", f1)
 
 <img width="364" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/5e283303-788c-43f3-b69c-fb430ffd5efc">
 
+No CV
+
+<img width="386" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/9f257ceb-23de-4655-9022-feb9a6858195">
+
+No CV + BN
 ### 遇到的困难
 
 1.网络极度欠拟合，无论是训练集准确率还是验证集准确率都在0.5-0.6范围内。
