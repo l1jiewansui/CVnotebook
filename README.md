@@ -556,8 +556,6 @@ https://blog.csdn.net/qq_41776781/article/details/111992844
 5.41个NC,判断公式为 
 The formula is: $F1score=\frac{2}{\frac{59}{x}+\frac{100-x}{x}}$.
 
-6.数据集中存在脏数据，空白图片
 
-<img width="551" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/d1e22537-3b7f-4cc7-a746-f631ba9ccd7b">
 
 
