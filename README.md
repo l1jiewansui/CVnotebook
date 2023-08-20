@@ -423,6 +423,8 @@ print("F1 Score:", f1)
 ## Stage 3
 <img width="388" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/ec7ad428-0ade-48ff-b906-28a0d1552c9f">
 
+<img width="364" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/5e283303-788c-43f3-b69c-fb430ffd5efc">
+
 ### 遇到的困难
 
 1.网络极度欠拟合，无论是训练集准确率还是验证集准确率都在0.5-0.6范围内。
