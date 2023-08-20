@@ -421,6 +421,7 @@ print("F1 Score:", f1)
 总之，这段代码演示了如何使用分层交叉验证来评估模型性能，并计算 ROC 曲线、AUC 值以及 F1 分数等评价指标，以更全面地了解模型在不同数据子集上的表现。
 
 ## Stage 3
+<img width="388" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/ec7ad428-0ade-48ff-b906-28a0d1552c9f">
 
 ### 遇到的困难
 
