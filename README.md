@@ -510,7 +510,7 @@ https://zhuanlan.zhihu.com/p/107687473
 
 大部分医学领域导出dicom格式，但是太复杂了。很多时候，将dicom转换为nifti格式也就是nii格式。后缀名为.nii的文件格式又叫NIfTI-1，它改编自广泛使用的ANALYZE™7.5格式。一些比NIfTI-1发展早的老软件也可以兼容NIfTI-1。
 
-一个NIFTI格式主要包含三部分：hdr,ext,img。\\
+一个NIFTI格式主要包含三部分：hdr,ext,img。
 
 
 **hdr/header**
@@ -524,13 +524,13 @@ voxel size(体素大小)：毫米单位的x,y,z大小。
 
 数据类型，一般是int16，这个精度不够，最好使用double类型。
 
-Form和转换矩阵，每一个Form都对应一个转换矩阵。暂时不知道Form是什么。\\
+Form和转换矩阵，每一个Form都对应一个转换矩阵。暂时不知道Form是什么。
 
 
 **Extension**
 
 
-是自己可以随意定义数据的部分，可以自己用。但是通用的软件公司都无法使用这部分。\\
+是自己可以随意定义数据的部分，可以自己用。但是通用的软件公司都无法使用这部分。
 
 
 **Image**
