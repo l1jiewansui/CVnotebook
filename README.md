@@ -1,12 +1,12 @@
 # CVnotebook
 具体笔记详见jupyternotebook注释
 
-## Stage 1
+## Stage 1 Logistic Regression
 
 ### 1.赛题要求
 
 这次的赛题旨在利用脑PET图像进行轻度认知障碍（MCI）的疾病预测。参赛者需要根据所提供的脑PET图像数据集，构建模型来进行轻度认知障碍（MCI）的预测，即对被试者进行分类，判断其是否属于MCI（轻度认知障碍）或健康（NC）。解题思路可以遵循计算机视觉分类的一般步骤，包括数据预处理、模型构建、训练和评估等阶段。在这个赛题中，可以采用深度学习模型（如卷积神经网络）等方法来从脑PET图像中提取特征，并进行分类预测，最终分类结果通过F1score指标评判。
-Stage
+
 ### 2.baseline中人工提取的特征
 
 非零像素的数量、零像素的数量、平均值、标准差、在列方向上平均值不为零的数量、在行方向上平均值不为零的数量、列方向上的最大平均值、行方向上的最大平均值
@@ -26,8 +26,7 @@ baseline使用的机器学习方法（基于特征提取和逻辑回归）的优
 3.泛化能力受限： 逻辑回归在面对高维和复杂数据时，泛化能力可能受到限制，可能会出现欠拟合或过拟合。
 
 ------------------------
-## Stage 2
-baseline没啥好说的...直接进入CNN
+## Stage 2 CNN
 
 ### 1.优化和上分思路
 
@@ -171,6 +170,8 @@ test_loader = torch.utils.data.DataLoader(
 1. **导入库**：代码一开始导入了所需的各种库，包括数据处理、机器学习框架（PyTorch）、图像处理等等。
 
 2. **设置随机种子**：这段代码设置了PyTorch的随机种子，以确保在可重复的情况下进行训练，这在实验复现和调试中很有用。
+
+<span id="jump">跳转内容目标</span>
 
 3. **定义数据路径**：通过`glob`库读取训练和测试数据的文件路径，并随机打乱它们的顺序。
 
@@ -507,7 +508,7 @@ https://zhuanlan.zhihu.com/p/107687473
 
 ## Stage 4
 
-### 认识nii图像
+### 1.认识nii图像
 
 大部分医学领域导出dicom格式，但是太复杂了。很多时候，将dicom转换为nifti格式也就是nii格式。后缀名为.nii的文件格式又叫NIfTI-1，它改编自广泛使用的ANALYZE™7.5格式。一些比NIfTI-1发展早的老软件也可以兼容NIfTI-1。
 
@@ -535,11 +536,17 @@ Image
 
 https://blog.csdn.net/weixin_42089190/article/details/116710684
 
-ITK-SNAP是一个用于三维医学图像分割的软件应用程序。它是宾夕法尼亚大学宾州图像计算与科学实验室（PICSL）的Paul Yushkevich博士和犹他大学科学计算与成像研究所（SCI）的Guido Gerig博士合作的产物，他的愿景是创造一个工具，将致力于一个特定的功能，分割，并将易于使用和学习。ITK-SNAP是免费的、开源的、多平台的，下载地址为http://www.itksnap.org/pmwiki/pmwiki.php?n=Downloads.SNAP3。ITK-SNAP加载数据集之后初始界面如下：初始化界面中三张图分别表示某一个slice所对应的横断面、矢状面、冠状面截图。横断面表示的是从上往下看时，患者组织的截图；矢状面表示从左往右看时，患者组织的截图；冠状面表示从前往后看时，患者组织的截图。
+ITK-SNAP是一个用于三维医学图像分割的软件应用程序。它是宾夕法尼亚大学宾州图像计算与科学实验室（PICSL）的Paul Yushkevich博士和犹他大学科学计算与成像研究所（SCI）的Guido Gerig博士合作的产物，他的愿景是创造一个工具，将致力于一个特定的功能，分割，并将易于使用和学习。ITK-SNAP是免费的、开源的、多平台的，下载地址为http://www.itksnap.org/pmwiki/pmwiki.php?n=Downloads.SNAP3。
+
+ITK-SNAP加载数据集之后初始界面如下：初始化界面中三张图分别表示某一个slice所对应的横断面、矢状面、冠状面截图。横断面表示的是从上往下看时，患者组织的截图；矢状面表示从左往右看时，患者组织的截图；冠状面表示从前往后看时，患者组织的截图。
 
 https://blog.csdn.net/qq_41776781/article/details/111992844
 
 <img width="1055" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/b52ffca1-3d0f-4e8b-ab66-d38de8c5e8dd">
+
+### 2.输入通道
+
+<img width="415" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/3b70d39c-d59d-478c-af5d-4ee6e5a8638b">
 
 
 
