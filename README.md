@@ -421,6 +421,15 @@ print("F1 Score:", f1)
 总之，这段代码演示了如何使用分层交叉验证来评估模型性能，并计算 ROC 曲线、AUC 值以及 F1 分数等评价指标，以更全面地了解模型在不同数据子集上的表现。
 
 ## Stage 3
+
+### 卷积层学习的特征（举例）：
+
+<img width="603" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/9415b243-0720-426c-9e42-a5ed105936f6">
+
+<img width="609" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/9be7c6a5-7370-4185-83e3-65ab29fadefb">
+
+### loss图像
+
 <img width="388" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/ec7ad428-0ade-48ff-b906-28a0d1552c9f">
 
 <img width="364" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/5e283303-788c-43f3-b69c-fb430ffd5efc">
@@ -496,7 +505,41 @@ https://www.jianshu.com/p/45c2180cab17
 https://blog.csdn.net/weixin_40267472/article/details/82216668
 https://zhuanlan.zhihu.com/p/107687473
 
-### 1.预训练模型
+## Stage 4
+
+### 认识nii图像
+
+大部分医学领域导出dicom格式，但是太复杂了。很多时候，将dicom转换为nifti格式也就是nii格式。后缀名为.nii的文件格式又叫NIfTI-1，它改编自广泛使用的ANALYZE™7.5格式。一些比NIfTI-1发展早的老软件也可以兼容NIfTI-1。
+
+一个NIFTI格式主要包含三部分：hdr,ext,img。
+
+hdr/header
+
+这部分数据长度是固定的，当然不同版本可能规定的长度不同，但是同一版本的多个nii文件是相同的。
+
+header里包含的信息有：维度，x,y,z，单位是毫米。还有第四个维度，就是时间。这部分储存的主要是四个数字。
+
+voxel size(体素大小)：毫米单位的x,y,z大小。
+
+数据类型，一般是int16，这个精度不够，最好使用double类型。
+
+Form和转换矩阵，每一个Form都对应一个转换矩阵。暂时不知道Form是什么。
+
+Extension
+
+是自己可以随意定义数据的部分，可以自己用。但是通用的软件公司都无法使用这部分。
+
+Image
+
+储存3D或者4D的图像数据
+
+https://blog.csdn.net/weixin_42089190/article/details/116710684
+
+ITK-SNAP是一个用于三维医学图像分割的软件应用程序。它是宾夕法尼亚大学宾州图像计算与科学实验室（PICSL）的Paul Yushkevich博士和犹他大学科学计算与成像研究所（SCI）的Guido Gerig博士合作的产物，他的愿景是创造一个工具，将致力于一个特定的功能，分割，并将易于使用和学习。ITK-SNAP是免费的、开源的、多平台的，下载地址为http://www.itksnap.org/pmwiki/pmwiki.php?n=Downloads.SNAP3。ITK-SNAP加载数据集之后初始界面如下：初始化界面中三张图分别表示某一个slice所对应的横断面、矢状面、冠状面截图。横断面表示的是从上往下看时，患者组织的截图；矢状面表示从左往右看时，患者组织的截图；冠状面表示从前往后看时，患者组织的截图。
+
+https://blog.csdn.net/qq_41776781/article/details/111992844
+
+<img width="1055" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/b52ffca1-3d0f-4e8b-ab66-d38de8c5e8dd">
 
 
 
