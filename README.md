@@ -430,7 +430,7 @@ No CV
 <img width="386" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/9f257ceb-23de-4655-9022-feb9a6858195">
 
 No CV + BN
-CV
+
 <img width="378" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/43736ea2-efc6-4593-8932-035656f670d8">
 
 <img width="381" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/cd2bc595-cb41-4b7d-8d9b-cfe4b480eac5">
@@ -514,5 +514,7 @@ https://zhuanlan.zhihu.com/p/107687473
 The formula is: $F1score=\frac{2}{\frac{59}{x}+\frac{100-x}{x}}$.
 
 6.数据集中存在脏数据，空白图片
-![21 nii_slice_000](https://github.com/l1jiewansui/CVnotebook/assets/134419371/ce61ddc2-f2f7-4929-9526-2df931877933)
+
+<img width="551" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/d1e22537-3b7f-4cc7-a746-f631ba9ccd7b">
+
 
