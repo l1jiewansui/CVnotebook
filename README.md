@@ -171,8 +171,6 @@ test_loader = torch.utils.data.DataLoader(
 
 2. **设置随机种子**：这段代码设置了PyTorch的随机种子，以确保在可重复的情况下进行训练，这在实验复现和调试中很有用。
 
-<span id="jump">跳转内容目标</span>
-
 3. **定义数据路径**：通过`glob`库读取训练和测试数据的文件路径，并随机打乱它们的顺序。
 
 4. **数据缓存**：`DATA_CACHE`是一个字典，用于缓存已加载的图像数据，以避免重复加载相同的数据。这可以提高数据加载的效率。
@@ -548,7 +546,37 @@ https://blog.csdn.net/qq_41776781/article/details/111992844
 
 <img width="415" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/3b70d39c-d59d-478c-af5d-4ee6e5a8638b">
 
+```
+def __getitem__(self, index):
+# 如果缓存中存在该图像，则直接从缓存中获取（DATA_CACHE）
+if self.img_path[index] in DATA_CACHE:
+img = DATA_CACHE[self.img_path[index]]
+# 如果缓存中没有该图像，则使⽤ nib.load() 函数加载图像，并只保留第⼀个通道的数据
+else:
+img = nib.load(self.img_path[index])
+# img.dataobj 属性获取图像数据，数据包括图像的所有通道和时间序列信息，因此使
+img = img.dataobj[:,:,:, 0]
+DATA_CACHE[self.img_path[index]] = img
+# 从最后⼀个维度随机选择 50 个通道（0 ~ 通道数-1）
+idx = np.random.choice(range(img.shape[-1]), 50)
+# 使⽤索引数组选取原始图像的所有通道，得到⼀个新的图像，其中包含这 50 个随机选择通
+img = img[:, :, idx]
+# 将图像数据的数据类型转换为 32 位浮点数类型（为后续数值计算和梯度下降等操作提供⽅
+img = img.astype(np.float32)
+# 如果 self.transform 不为 None，则调⽤ self.transform 函数对图像 img 进⾏处
+if self.transform is not None:
+img = self.transform(image = img)['image']
+# 对图像的维度进⾏转置【（C，H，W）-->（H，W，C）】
+img = img.transpose([2,0,1])
+# __getitem__ ⽅法返回⼀个元组，包含两个元素：处理后的图像数据和标签数据
+"""torch.from_numpy(np.array(int('NC' in self.img_path[index])))
+⾸先，通过'NC' in self.img_path[index]判断当前图像⽂件名中是否包含字符串'NC'，
+return img,torch.from_numpy(np.array(int('NC' in self.img_path[index])))
 
+```
+
+
+### 3.设置随机种子
 
 ## 杂谈
 
