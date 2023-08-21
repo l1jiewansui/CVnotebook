@@ -513,7 +513,7 @@ https://zhuanlan.zhihu.com/p/107687473
 一个NIFTI格式主要包含三部分：hdr,ext,img。
 
 
-**hdr/header**
+#### **hdr/header**
 
 
 这部分数据长度是固定的，当然不同版本可能规定的长度不同，但是同一版本的多个nii文件是相同的。
@@ -527,13 +527,13 @@ voxel size(体素大小)：毫米单位的x,y,z大小。
 Form和转换矩阵，每一个Form都对应一个转换矩阵。暂时不知道Form是什么。
 
 
-**Extension**
+#### **Extension** 
 
 
 是自己可以随意定义数据的部分，可以自己用。但是通用的软件公司都无法使用这部分。
 
 
-**Image**
+#### **Image**
 
 
 储存3D或者4D的图像数据
