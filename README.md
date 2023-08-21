@@ -801,6 +801,42 @@ plt.tight_layout()
 plt.show()
 ```
 <img width="800" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/670b2590-beb2-4264-8220-acac138511fe">
+```
+import matplotlib.pyplot as plt
+import albumentations as A
+
+# 选择一个批次进行可视化
+sample_batch, _ = next(iter(train_loader))
+
+# 定义增强操作
+augmentations = A.Compose([
+    A.RandomRotate90(),
+    A.RandomCrop(120, 120),
+    A.HorizontalFlip(p=0.5),
+    A.RandomContrast(p=0.5),
+    A.RandomBrightnessContrast(p=0.5),
+])
+
+plt.figure(figsize=(15, 5))
+
+for i in range(sample_batch.shape[0]):
+    original_image = sample_batch[i, 0].numpy()  # 原始图像
+    augmented_image = augmentations(image=original_image)["image"]  # 增强后的图像
+
+    plt.subplot(2, sample_batch.shape[0], i + 1)
+    plt.title("Original")
+    plt.imshow(original_image, cmap="gray")
+
+    plt.subplot(2, sample_batch.shape[0], i + sample_batch.shape[0] + 1)
+    plt.title("Augmented")
+    plt.imshow(augmented_image, cmap="gray")
+
+plt.tight_layout()
+plt.show()
+```
+
+<img width="138" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/b49fd47f-0057-4657-bbdf-4378dc991546">
+
 
 #### Compose
 
