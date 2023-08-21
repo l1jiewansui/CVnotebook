@@ -664,6 +664,39 @@ The shape of the NIfTI image is: (128, 128, 768, 1)
         return img,torch.from_numpy(np.array(int('NC' in self.img_path[index])))
 ```
 我们可以尝试可视化这50个切片：
+```
+import matplotlib.pyplot as plt
+
+# 创建XunFeiDataset实例
+transform = None  # 如果有图像变换，可以在这里添加
+dataset = XunFeiDataset(train_path, transform=transform)
+
+# 随机选择一些图像
+num_images_to_display = 5
+selected_indices = np.random.choice(len(dataset), num_images_to_display, replace=False)
+
+# 遍历选定的图像
+for idx in selected_indices:
+    img, label = dataset[idx]
+    img_path = dataset.img_path[idx]  # 获取图像路径
+
+    # 提取图像文件名作为标题
+    img_name = os.path.basename(img_path)
+
+    # 显示50个通道的图像
+    fig, axes = plt.subplots(10, 5, figsize=(15, 30))
+    fig.suptitle(f"Image: {img_name} ", fontsize=16)
+
+    for i in range(10):
+        for j in range(5):
+            channel_idx = i * 5 + j
+            channel_img = img[channel_idx]
+            axes[i, j].imshow(channel_img, cmap='gray')
+            axes[i, j].set_title(f"Channel {channel_idx}")
+            axes[i, j].axis('off')
+
+    plt.show()
+```
 
 <img width="613" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/641d6fcd-62fb-49bf-ab1d-ff5b6b3306f0">
 
