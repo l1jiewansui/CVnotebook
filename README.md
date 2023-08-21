@@ -767,6 +767,40 @@ A.HorizontalFlip(p=0.5)：以50%的概率水平翻转图像。
 A.RandomContrast(p=0.5)：以50%的概率随机调整图像的对比度。
 A.RandomBrightnessContrast(p=0.5)：以50%的概率随机调整图像的亮度和对比度。
 ```
+```
+#可视化变化代码
+import matplotlib.pyplot as plt
+import albumentations as A
+
+# 选择一张图像进行可视化
+sample_index = 0
+sample_image, _ = train_loader.dataset[sample_index]
+
+# 定义增强操作
+augmentations = [
+    A.RandomRotate90(p=1),
+    A.RandomCrop(120, 120, p=1),
+    A.HorizontalFlip(p=1),
+    A.RandomContrast(p=1),
+    A.RandomBrightnessContrast(p=1)
+]
+
+# 可视化不同增强下的图像效果
+plt.figure(figsize=(15, 5))
+plt.subplot(1, len(augmentations) + 1, 1)
+plt.title("Original Image")
+plt.imshow(sample_image[0], cmap="gray")
+
+for idx, augmentation in enumerate(augmentations, start=2):
+    augmented_image = augmentation(image=sample_image)["image"]
+    plt.subplot(1, len(augmentations) + 1, idx)
+    plt.title(augmentation.__class__.__name__)
+    plt.imshow(augmented_image[0], cmap="gray")
+
+plt.tight_layout()
+plt.show()
+```
+<img width="800" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/670b2590-beb2-4264-8220-acac138511fe">
 
 #### Compose
 
