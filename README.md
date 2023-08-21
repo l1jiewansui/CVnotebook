@@ -663,6 +663,10 @@ The shape of the NIfTI image is: (128, 128, 768, 1)
         print(img.shape[-1])
         return img,torch.from_numpy(np.array(int('NC' in self.img_path[index])))
 ```
+我们可以尝试可视化这50个切片：
+
+<img width="613" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/641d6fcd-62fb-49bf-ab1d-ff5b6b3306f0">
+
 ### 3.设置随机种子
 
 ## 杂谈
