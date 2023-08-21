@@ -802,14 +802,14 @@ plt.show()
 ```
 <img width="800" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/670b2590-beb2-4264-8220-acac138511fe">
 
-
+```
 # 选择一个批次进行可视化
 
-```
+
 import matplotlib.pyplot as plt
 import albumentations as A
 sample_batch, _ = next(iter(train_loader))
-```
+
 
 # 定义增强操作
 ```
