@@ -894,15 +894,53 @@ https://albumentations.ai/docs/transforms/transforms_overview/
 
 ### 4.关于卷积神经网络
 
-1.`nn.AdaptiveAvgPool2d` 是 PyTorch 中的一个层，用于在二维输入张量上执行自适应平均池化操作。通常情况下，它用于将不同尺寸的输入张量转换为固定尺寸的输出张量。
+#### 初始卷积层
+
+model.conv1 = torch.nn.Conv2d(50, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+
+#### 池化层
+
+`nn.AdaptiveAvgPool2d` 是 PyTorch 中的一个层，用于在二维输入张量上执行自适应平均池化操作。通常情况下，它用于将不同尺寸的输入张量转换为固定尺寸的输出张量。
 
 - `nn.AdaptiveAvgPool2d(output_size)` 接受一个形状为 `(batch_size, channels, height, width)` 的输入张量，计算输入张量每个通道在每个空间维度（高度和宽度）上的平均值。`output_size` 参数指定了期望的输出空间维度，而你这里使用的是 `(1, 1)`，这意味着将输入张量的长度和宽度都缩减为 1。
 
 这通常用于确保卷积层的输出可以直接馈送到具有固定数量神经元的全连接层，而不考虑原始输入图像的尺寸，使其在传递到全连接层之前具有固定的尺寸 `(batch_size, channels, 1, 1)`。这种自适应池化操作有助于使网络对输入图像尺寸的变化更具鲁棒性，还可以减少最终全连接层中的参数数量，有助于防止**过拟合**。
 
+#### 偏置项
 
+为什么不使用偏置项？这是一个问题。
 
+https://blog.csdn.net/weixin_43334838/article/details/124244086
 
+若x变成x+b,代入公式，得到的y结果与先前一致，所以不需加入偏置。
+
+#### 图像通道
+
+一般来说，对于彩色图像，通常有红色、绿色和蓝色三个颜色通道。对于灰度图像，只有一个通道。在这种情况下，输入通道数指的是在卷积层中输入的特征图的通道数。ResNet默认为3，而魔改版为50。
+
+但这里的50应该是z轴高度值，在网络上其他处理方案中，这里应该设为1，而50应该改为在之前就分开（不然就相当于少了50倍的数据！）。
+
+https://blog.csdn.net/cf_jack/article/details/129167837
+
+https://blog.csdn.net/jiacong_wang/article/details/105631229
+
+https://blog.csdn.net/qq_51143616/article/details/125463512?ops_request_misc=&request_id=&biz_id=102&utm_term=1%E9%80%9A%E9%81%93resnet%E9%A2%84%E8%AE%AD%E7%BB%83%E6%9D%83%E9%87%8D&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduweb~default-3-125463512.142
+
+```
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import torchvision.models as models
+ 
+# Define ResNet model
+class ResNet(nn.Module):
+    def __init__(self, num_classes):
+        super(ResNet, self).__init__()
+        self.resnet = models.resnet18(pretrained=True)
+        self.resnet.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=1, padding=1, bias=False)
+        num_ftrs = self.resnet.fc.in_features
+        self.resnet.fc = nn.Linear(num_ftrs, num_classes)
+```
 
 ### 5.设置随机种子
 
