@@ -557,7 +557,7 @@ https://blog.csdn.net/qq_41776781/article/details/111992844
 
 <img width="475" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/a40257b1-50ef-45c1-892c-0501d494a1a8">
 
-**nii图像头文件信息**
+#### **nii图像头文件信息**
 
 ```
 NIfTI Header Information:
@@ -607,7 +607,7 @@ srow_z          : [0. 0. 0. 0.]
 intent_name     : b''
 magic           : b'n+1'
 ```
-**nii图像shape信息**
+#### **nii图像shape信息**
 ```
 import nibabel as nib
 
@@ -700,6 +700,37 @@ for idx in selected_indices:
 
 <img width="613" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/641d6fcd-62fb-49bf-ab1d-ff5b6b3306f0">
 
+我们同时可以发现，部分图片基本不可能提取到有用信息，可能需要清除，在这里先按下不表。
+
+#### 修改类函数，选取所有通道，而不是随机选取50
+```
+class XunFeiDataset(Dataset):
+    def __init__(self, img_path, transform=None):
+        self.img_path = img_path
+        if transform is not None:
+            self.transform = transform
+        else:
+            self.transform = None
+    
+    def __getitem__(self, index):
+        if self.img_path[index] in DATA_CACHE:
+            img = DATA_CACHE[self.img_path[index]]
+        else:
+            img = nib.load(self.img_path[index]) 
+            img = img.dataobj[:, :, :, 0]
+            DATA_CACHE[self.img_path[index]] = img
+        
+        img = img.astype(np.float32)
+
+        if self.transform is not None:
+            img = self.transform(image=img)['image']
+        
+        img = img.transpose([2, 0, 1])
+        return img, torch.from_numpy(np.array(int('NC' in self.img_path[index])))
+    
+    def __len__(self):
+        return len(self.img_path)
+```
 ### 3.设置随机种子
 
 ## 杂谈
