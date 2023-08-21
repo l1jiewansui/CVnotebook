@@ -631,10 +631,36 @@ if image_shape is not None:
 output:
 The shape of the NIfTI image is: (128, 128, 47, 1)
 The shape of the NIfTI image is: (128, 128, 63, 1)
+The shape of the NIfTI image is: (256, 256, 47, 1)
 The shape of the NIfTI image is: (128, 128, 768, 1)
 这表示图像数据的形状，具体为四维（x、y、z和时间维度）的数组。在这个例子中，图像数据的尺寸为 128x128x768x1，其中768是z方向的维度。说明图像大小不一样。
 
-最后一个维度代表图像通道数，通常情况下，通道数为1，因为医学图像通常是单通道的。
+最后一个维度代表图像通道数，通常情况下，通道数为1，因为医学图像通常是单通道的，灰度图像只有一个颜色通道。
+
+在如下操作中，实际上是取img = img.dataobj[:,:,:, 0]，也就是第一个通道。idx = np.random.choice(range(img.shape[-1]), 50)并随机取z维的50个切片作为索引
+
+然而在之前的工作中我们发现，有很大一部分图片的维度并不是50，甚至少于50，在这种随机的过程中，很有可能丢失部分信息，增加了随机性。
+
+    def __getitem__(self, index):
+        if self.img_path[index] in DATA_CACHE:
+            img = DATA_CACHE[self.img_path[index]]
+        else:
+            img = nib.load(self.img_path[index]) 
+            img = img.dataobj[:,:,:, 0]
+            DATA_CACHE[self.img_path[index]] = img
+        
+        # 随机选择一些通道            
+        idx = np.random.choice(range(img.shape[-1]), 50)
+        img = img[:, :, idx]
+        img = img.astype(np.float32)
+
+        if self.transform is not None:
+            img = self.transform(image = img)['image']
+        
+        img = img.transpose([2,0,1])
+
+        print(img.shape[-1])
+        return img,torch.from_numpy(np.array(int('NC' in self.img_path[index])))
 ```
 ### 3.设置随机种子
 
