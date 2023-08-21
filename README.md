@@ -638,6 +638,10 @@ The shape of the NIfTI image is: (128, 128, 768, 1)
 
 最后一个维度代表图像通道数，通常情况下，通道数为1，因为医学图像通常是单通道的，灰度图像只有一个颜色通道。
 
+-----------------------------------
+
+#### 回到源代码
+
 在如下操作中，实际上是取img = img.dataobj[:,:,:, 0]，也就是第一个通道。idx = np.random.choice(range(img.shape[-1]), 50)并随机取z维的50个切片作为索引
 
 然而在之前的工作中我们发现，有很大一部分图片的维度并不是50，甚至少于50，在这种随机的过程中，很有可能丢失部分信息，增加了随机性。
@@ -702,6 +706,8 @@ for idx in selected_indices:
 
 我们同时可以发现，部分图片基本不可能提取到有用信息，可能需要清除，在这里先按下不表。
 
+----------------
+
 #### 修改类函数，选取所有通道，而不是随机选取50
 ```
 class XunFeiDataset(Dataset):
@@ -731,6 +737,9 @@ class XunFeiDataset(Dataset):
     def __len__(self):
         return len(self.img_path)
 ```
+<img width="432" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/ba955012-3383-44e8-940a-293997a69298">
+
+
 ### 3.设置随机种子
 
 ## 杂谈
