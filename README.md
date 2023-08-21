@@ -607,7 +607,33 @@ srow_z          : [0. 0. 0. 0.]
 intent_name     : b''
 magic           : b'n+1'
 ```
+**nii图像shape信息**
+```
+import nibabel as nib
 
+def get_nifti_shape(nifti_file_path):
+    try:
+        nifti_image = nib.load(nifti_file_path)
+        image_shape = nifti_image.shape
+        return image_shape
+    except Exception as e:
+        print("Error:", e)
+        return None
+
+nifti_file_path = "./test/86.nii"  # 替换为你的NIfTI文件的路径
+image_shape = get_nifti_shape(nifti_file_path)
+
+if image_shape is not None:
+    print(f"The shape of the NIfTI image is: {image_shape}")
+
+```
+```
+output:
+The shape of the NIfTI image is: (128, 128, 47, 1)
+The shape of the NIfTI image is: (128, 128, 63, 1)
+The shape of the NIfTI image is: (128, 128, 768, 1)
+这表示图像数据的形状，具体为四维（x、y、z和时间维度）的数组。在这个例子中，图像数据的尺寸为 128x128x768x1，其中768是z方向的维度。说明图像大小不一样。
+```
 ### 3.设置随机种子
 
 ## 杂谈
