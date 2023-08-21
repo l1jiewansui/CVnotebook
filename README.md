@@ -768,6 +768,57 @@ A.RandomContrast(p=0.5)：以50%的概率随机调整图像的对比度。
 A.RandomBrightnessContrast(p=0.5)：以50%的概率随机调整图像的亮度和对比度。
 ```
 
+#### Compose
+
+转换按照列表中的顺序依次应用。
+
+#### OneOf
+
+Compose组合下的变换是要挨着顺序做的，而OneOf组合里面的变换是系统自动选择其中一个来做，而这里的概率参数p是指选定后的变换被做的概率。
+
+Albumentations库提供了许多图像增强变换，用于数据增强、数据预处理和数据转换。以下是Albumentations库中常用的一些变换操作，它们可以用于增强训练数据集以及进行数据预处理：
+
+1. **颜色和对比度变换**：
+   - `RandomBrightnessContrast`: 随机调整图像的亮度和对比度。
+   - `HueSaturationValue`: 随机调整图像的色调、饱和度和亮度。
+   - `RGBShift`: 随机调整图像的RGB通道的值。
+
+2. **几何变换**：
+   - `HorizontalFlip`: 水平翻转图像。
+   - `VerticalFlip`: 垂直翻转图像。
+   - `RandomRotate90`: 随机旋转图像90度。
+   - `Rotate`: 旋转图像给定角度。
+
+3. **尺寸调整和裁剪**：
+   - `Resize`: 调整图像大小。
+   - `RandomResizedCrop`: 随机裁剪和调整大小。
+   - `CenterCrop`: 居中裁剪图像。
+
+4. **滤波和模糊**：
+   - `Blur`: 对图像进行模糊操作。
+   - `GaussianBlur`: 对图像应用高斯模糊。
+   - `MedianBlur`: 对图像应用中值模糊。
+
+5. **填充和遮罩**：
+   - `PadIfNeeded`: 根据需要填充图像。
+   - `Cutout`: 在图像中随机生成遮罩以删除图像区域。
+
+6. **形态学变换**：
+   - `ElasticTransform`: 弹性变换，模拟图像变形。
+   - `GridDistortion`: 对图像进行网格扭曲。
+
+7. **像素级变换**：
+   - `RandomBrightness`: 随机调整图像的亮度。
+   - `RandomContrast`: 随机调整图像的对比度。
+
+8. **混合和合成**：
+   - `RandomGamma`: 随机调整图像的Gamma值。
+   - `RandomShadow`: 在图像上添加随机阴影效果。
+   - `Compose`: 将多个变换组合在一起。
+
+https://albumentations.ai/docs/transforms/transforms_overview/
+
+
 ### 4.设置随机种子
 
 ## 杂谈
