@@ -809,6 +809,7 @@ import albumentations as A
 sample_batch, _ = next(iter(train_loader))
 
 # 定义增强操作
+```
 augmentations = A.Compose([
     A.RandomRotate90(),
     A.RandomCrop(120, 120),
