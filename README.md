@@ -1,20 +1,6 @@
 # CVnotebook
 具体笔记详见jupyternotebook注释
 
-@[toc](目录)//小括号里的名字可以自己设置
-# 我是一级标题
-//文章内容
-## 我是二级标题
-//文章内容
-## 我是二级标题
-//文章内容
-# 我是一级标题
-//文章内容
-## 我是二级标题
-//文章内容
-### 我是三级标题
-//文章内容
-
 ## Stage 1 Logistic Regression
 
 ### 1.赛题要求
@@ -755,8 +741,34 @@ class XunFeiDataset(Dataset):
 ```
 <img width="432" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/ba955012-3383-44e8-940a-293997a69298">
 
+### 3.图像增强
 
-### 3.设置随机种子
+```
+    XunFeiDataset(train_path[:-10],
+            A.Compose([
+            A.RandomRotate90(),
+            A.RandomCrop(120, 120),
+            A.HorizontalFlip(p=0.5),
+            A.RandomContrast(p=0.5),
+            A.RandomBrightnessContrast(p=0.5),
+        ])
+```
+
+https://zhuanlan.zhihu.com/p/107399127/
+
+albumentations 是一个给予 OpenCV的快速训练数据增强库，拥有非常简单且强大的可以用于多种任务（分割、检测）的接口，易于定制且添加其他框架非常方便。
+
+它可以对数据集进行逐像素的转换，如模糊、下采样、高斯造点、高斯模糊、动态模糊、RGB转换、随机雾化等；也可以进行空间转换（同时也会对目标进行转换），如裁剪、翻转、随机裁剪等。
+
+```
+A.RandomRotate90()：随机将图像旋转90度（0、90、180或270度）。
+A.RandomCrop(120, 120)：随机从图像中裁剪出一个120x120的区域。
+A.HorizontalFlip(p=0.5)：以50%的概率水平翻转图像。
+A.RandomContrast(p=0.5)：以50%的概率随机调整图像的对比度。
+A.RandomBrightnessContrast(p=0.5)：以50%的概率随机调整图像的亮度和对比度。
+```
+
+### 4.设置随机种子
 
 ## 杂谈
 
