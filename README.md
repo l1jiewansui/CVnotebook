@@ -45,7 +45,7 @@ baseline使用的机器学习方法（基于特征提取和逻辑回归）的优
 | 备注     | 不适用      | 分数不错但结果不行 |深层网络不一定好|预测9个为MIC,有四个预测错了|
 
 ----------
-目前想法：或许应该换模型了，resnet的极限似乎快到了
+结论：不管使用什么2D模型,效果相差无几
 
 ### 2.各种模型
 
@@ -418,6 +418,60 @@ print("F1 Score:", f1)
 8. **计算和打印 F1 分数**：使用预测的标签和真实标签计算 F1 分数，该分数综合了精确度和召回率。
 
 总之，这段代码演示了如何使用分层交叉验证来评估模型性能，并计算 ROC 曲线、AUC 值以及 F1 分数等评价指标，以更全面地了解模型在不同数据子集上的表现。
+
+```
+def predict(test_loader, model, criterion):
+    model.eval()
+    val_acc = 0.0
+    
+    test_pred = []
+    with torch.no_grad():
+        for i, (input, target) in enumerate(test_loader):
+            input = input.cuda()
+            target = target.cuda()
+
+            output = model(input)
+            test_pred.append(output.data.cpu().numpy())
+            
+    return np.vstack(test_pred)
+    
+pred = None
+for _ in range(20):
+    if pred is None:
+        pred = predict(test_loader, model, criterion)
+    else:
+        pred += predict(test_loader, model, criterion)
+        
+submit = pd.DataFrame(
+    {
+        'uuid': [int(x.split('\\')[-1][:-4]) for x in test_path],
+        'label': pred.argmax(1)
+})
+submit['label'] = submit['label'].map({1:'NC', 0: 'MCI'})
+submit = submit.sort_values(by='uuid')
+submit.to_csv('submit1_2.csv', index=None)
+
+```
+这段代码是一个用于在测试集上进行预测并生成提交文件的过程。主要步骤如下：
+
+1. **定义 `predict` 函数**:
+    - `predict` 函数用于在给定的 `test_loader` 上进行模型预测，并返回预测结果的集合。
+    - 函数首先将模型设置为评估模式（`model.eval()`），然后初始化变量 `val_acc` 用于存储验证准确率。
+    - 在 `test_pred` 列表中，使用 `torch.no_grad()` 上下文管理器遍历测试集加载器中的数据。对于每个批次的输入 `input`，通过模型得到输出 `output`，并将输出数据的 NumPy 表示添加到 `test_pred` 列表中。
+    - 最后，函数返回一个垂直堆叠的 NumPy 数组，其中包含所有预测结果。
+
+2. **循环预测**:
+    - 使用一个循环进行多次预测（在这里是 20 次），以增加预测结果的稳定性。
+    - 在第一次循环中，直接调用 `predict` 函数得到 `pred`，并在后续循环中将其他预测结果累加到 `pred` 中。
+
+3. **生成提交文件**:
+    - 创建一个空的变量 `pred`，它将存储最终的预测结果。
+    - 使用循环调用 `predict` 函数并将预测结果累加到 `pred` 中。这样，你将得到 20 次预测的累计结果。
+    - 使用 `pd.DataFrame` 构造一个 DataFrame `submit`，其中包含两列：'uuid' 和 'label'。'uuid' 是测试样本的标识符，'label' 是预测的标签。
+    - 将 'uuid' 列设置为测试样本的标识符，通过从文件路径中提取出相应的信息。'label' 列将被设置为预测结果的标签。
+    - 最后，对 DataFrame `submit` 按 'uuid' 列进行排序，并将其保存为 CSV 文件（'submit1_2.csv'）。
+
+总之，这段代码用于对测试数据集进行多次预测，累计预测结果，并将最终的预测结果生成为一个 CSV 提交文件。预测过程使用了一个循环，以获得更稳定的预测结果。最后，生成的提交文件将包含测试样本的标识符和预测标签。
 
 ## Stage 3
 
@@ -920,7 +974,7 @@ https://blog.csdn.net/weixin_43334838/article/details/124244086
 
 但这里的50应该是z轴高度值，在网络上其他处理方案中，这里本来应该设为1，不然就相当于少了50倍的数据。
 
-但分开成单个slice十分困难，随机选择768可能会造成大量重复，或许我们应该考虑3D卷积。
+但分开成单个slice十分困难，随机选择768可能会造成大量重复（运行时间很长），或许我们应该考虑3D卷积。
 
 https://blog.csdn.net/cf_jack/article/details/129167837
 
@@ -943,6 +997,39 @@ class ResNet(nn.Module):
         num_ftrs = self.resnet.fc.in_features
         self.resnet.fc = nn.Linear(num_ftrs, num_classes)
 ```
+#### 解决方案（不使用3D卷积）
+
+我们知道，医学影像的边缘slice可能没有关键信息或者噪声严重，我们或许可以不随机选择50层，而是从中间选取46层（因为最小是47层图片）。
+
+```
+    def __getitem__(self, index):
+        if self.img_path[index] in DATA_CACHE:
+            img = DATA_CACHE[self.img_path[index]]
+        else:
+            img = nib.load(self.img_path[index]) 
+            img = img.dataobj[:, :, :, 0]
+            DATA_CACHE[self.img_path[index]] = img
+        
+        num_channels = img.shape[-1]
+        middle_start = (num_channels - 46) // 2  # 计算开始通道的索引，使得选取的 46 个通道位于中间位置
+        selected_channels = slice(middle_start, middle_start + 46)  # 创建一个切片对象用于选取连续的 46 个通道
+        img = img[:, :, selected_channels]  # 选取最中间的 46 个通道
+        img = img.astype(np.float32)
+        print(selected_channels)
+        
+        if self.transform is not None:
+            img = self.transform(image=img)['image']
+        
+        img = img.transpose([2, 0, 1])
+        return img, torch.from_numpy(np.array(int('NC' in self.img_path[index])))
+
+```
+可以发现所有图片都取了中间层，降低了误差。
+<img width="90" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/1b7b9b51-df10-452c-b5ea-dcfefb85f630">
+
+分数不错，可以接收。
+
+<img width="383" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/1c801841-adc4-4e2f-9221-3e813f87ccb9">
 
 ### 5.设置随机种子
 
