@@ -1655,6 +1655,88 @@ for filename in os.listdir(folder_path):
 
 准确率依然存在跳变，说明方案依然存在改进空间。
 
+### 3.测试集
+
+测试集的处理也是非常重要的，首先需要对nii文件进行相同的处理，取1/3的切片，然后对所有切片进行模型判断NC/MCI，最后根据nii文件所有切片投票的多寡来判断最终类别。
+
+当然，这可能会对某些模糊的对象产生误判，因为NC/MCI投票无法体现图像偏向NC/MCI的程度，但直接累加结果的二维向量（正如baseline一样），可能无法保证数量级的一致，因为不同的切片结果向量的数量级是不一样的。因此本方案依然采用投票法。
+
+```
+from collections import Counter
+from tqdm import tqdm
+
+def predict_majority(test_loader, model):
+    model.eval()
+    test_pred = []
+
+    with torch.no_grad():
+        for input, _ in test_loader:
+            input = input.cuda()
+            output = model(input)
+            test_pred.append(output.cpu())  # No need for .data.numpy() here
+
+    return torch.cat(test_pred, dim=0)  # Concatenate along batch dimension
+
+# Get model predictions
+pred = predict_majority(test_loader, model)
+
+# Calculate predicted labels
+predicted_labels = pred.argmax(dim=1)
+predicted_labels = predicted_labels.tolist()
+
+# Create a dictionary to store NC and MCI counts for each slice
+slice_counts = {}
+for i, path in enumerate(test_path):
+    slice_name = path.split('/')[-1]
+    slice_num = slice_name.split('_')[1]
+    label = predicted_labels[i]
+
+    if slice_num not in slice_counts:
+        slice_counts[slice_num] = Counter()
+
+    slice_counts[slice_num][label] += 1
+
+# Create a dictionary to store predictions for each sample
+sample_predictions = {}
+
+# Fill in sample_predictions with individual predictions
+for i, (input, _) in tqdm(enumerate(test_loader), total=len(test_loader)):
+    input = input.cuda()
+    output = model(input)
+    predicted_scores = output.cpu().tolist()  # Get prediction scores instead of labels
+    
+    slice_names = [path.split('\\')[-1] for path in test_path[i * 32 : (i + 1) * 32]]
+    sample_ids = [name.split('_')[0] for name in slice_names]
+    
+    for j, sample_id in enumerate(sample_ids):
+        if sample_id not in sample_predictions:
+            sample_predictions[sample_id] = []
+        sample_predictions[sample_id].append(predicted_scores[j])
+
+# Determine majority label for each sample
+final_predictions = []
+sorted_sample_predictions = sorted(sample_predictions.items(), key=lambda x: int(x[0]))
+
+for sample_id, scores_list in sorted_sample_predictions:
+    avg_scores = np.mean(scores_list, axis=0)  # Calculate average scores across slices
+    predicted_label = np.argmax(avg_scores)  # Choose the class with the highest average score
+    
+    # Assuming predicted_label 0 corresponds to "NC" and predicted_label 1 corresponds to "MCI"
+    if predicted_label == 0:
+        final_predictions.append('NC')
+    else:
+        final_predictions.append('MCI')
+
+# Create submission DataFrame
+submit = pd.DataFrame(
+    {
+        'uuid': [int(sample_id) for sample_id, _ in sorted_sample_predictions],
+        'label': final_predictions
+    }
+)
+submit.to_csv('submits.csv', index=None)
+```
+
 ## 杂谈和勘误
 
 1.为什么要用F1score,准确率+召回率，比较均衡的评价指标。
