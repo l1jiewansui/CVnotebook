@@ -1,4 +1,5 @@
 # CV notebook         by Meng
+<img width="500" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/baa593a7-d458-49ee-a0ef-365ab32e7554">
 [toc]
 
 ## Stage 1 Logistic Regression baseline 综述
@@ -1356,7 +1357,8 @@ File: 8.nii, Shape: (128, 128)
 File: 9.nii, Shape: (128, 128)
 ```
 
-![image-20230823182132906](C:\Users\lenovo\AppData\Roaming\Typora\typora-user-images\image-20230823182132906.png)
+<img width="420" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/887f8781-5c26-4a81-9421-300e48a5e1eb">
+
 
 对于某些过大的图像，在128*128区域内有效数据其实已经够用。
 
@@ -1412,7 +1414,9 @@ for filename in os.listdir(folder_path):
             print(f"File: {filename}, Slice: {slice_index}, Shape: {single_slice.shape}")
 ```
 
-![image-20230823184302458](C:\Users\lenovo\AppData\Roaming\Typora\typora-user-images\image-20230823184302458.png)
+<img width="414" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/de3cb72b-16d9-4eb6-82ac-bb57675916e3">
+
+
 
 我们的数据和2020年的数据还是很不一样的，很多切片是脏数据，需要清洗；二维直接拿过来训练效果必定不佳。可以考虑三维卷积神经网络。
 
@@ -1459,7 +1463,8 @@ plt.yticks(np.arange(-0.5, height, 1), [])
 plt.show()
 ```
 
-![image-20230823192749606](C:\Users\lenovo\AppData\Roaming\Typora\typora-user-images\image-20230823192749606.png)
+<img width="1112" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/e2927973-b2f9-407f-a1fa-3bbf378698be">
+
 
 我们也可以查看裁剪效果：
 
@@ -1551,7 +1556,8 @@ plt.tight_layout()
 plt.show()
 ```
 
-![image-20230825150355589](C:\Users\lenovo\AppData\Roaming\Typora\typora-user-images\image-20230825150355589.png)
+<img width="620" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/3dcf77d1-9513-4ee5-8a21-7c130c3843a1">
+
 
 效果不错！
 
@@ -1645,7 +1651,7 @@ for filename in os.listdir(folder_path):
 
 具体修改，详见cnn.ipynb。
 
-![image-20230825151017646](C:\Users\lenovo\AppData\Roaming\Typora\typora-user-images\image-20230825151017646.png)
+<img width="547" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/57c6e1e6-c173-4bb3-9874-8c8e3ce46639">
 
 准确率依然存在跳变，说明方案依然存在改进空间。
 
