@@ -1,5 +1,5 @@
 # CV notebook         by Meng
-<img width="500" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/baa593a7-d458-49ee-a0ef-365ab32e7554">
+<img width="615" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/5fdc7b6d-6dfb-4933-8770-2f90fcc992f1">
 [toc]
 
 ## Stage 1 Logistic Regression baseline 综述
