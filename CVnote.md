@@ -1653,7 +1653,7 @@ for filename in os.listdir(folder_path):
 
 <img width="547" alt="image" src="https://github.com/l1jiewansui/CVnotebook/assets/134419371/57c6e1e6-c173-4bb3-9874-8c8e3ce46639">
 
-准确率依然存在跳变，说明方案依然存在改进空间。
+准确率依然存在跳变，说明方案依然存在改进空间。（已经通过减小学习率解决，学习率需要1e-4以降）
 
 ### 3.测试集
 
@@ -1736,6 +1736,7 @@ submit = pd.DataFrame(
 )
 submit.to_csv('submits.csv', index=None)
 ```
+21:39最后一次提交，成绩为0.86364	
 
 ## 杂谈和勘误
 
