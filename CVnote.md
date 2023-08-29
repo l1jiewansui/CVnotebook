@@ -1749,10 +1749,15 @@ submit.to_csv('submits.csv', index=None)
 4.全NC的结果是0.74214。
 
 5.41个NC,判断公式为 
+
 The formula is: 
+
+```
 $$
 F1score=\frac{2}{\frac{59}{x}+\frac{100-x}{x}}
 $$
+```
+
 6.baseline里train_loader和val_loader可能打错了，裁剪应该是128不是120
 
 
