@@ -1752,11 +1752,8 @@ submit.to_csv('submits.csv', index=None)
 
 The formula is: 
 
-```
-$$
-F1score=\frac{2}{\frac{59}{x}+\frac{100-x}{x}}
-$$
-```
+
+$$F1score=\frac{2}{\frac{59}{x}+\frac{100-x}{x}}$$
 
 6.baseline里train_loader和val_loader可能打错了，裁剪应该是128不是120
 
